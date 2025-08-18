@@ -39,8 +39,6 @@ void bullet::shoot() {
 
 void wall() {
 
-
-    attroff(COLOR_PAIR(1));
     for (int i=0;i<getmaxx(stdscr);i++) {
         move(0,i);
         printw("#");
