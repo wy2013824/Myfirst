@@ -7,7 +7,7 @@
 #include <ncurses.h>
 #include <cstdlib>
 #include <vector>
-#include <conio.h>
+#inlcude <unistd.h>
 void wall();
 
 enum direction { UP, DOWN, LEFT, RIGHT };
