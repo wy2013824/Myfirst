@@ -1,109 +1,103 @@
-/
+//
 // Created by wy on 2025/8/8.
 //
 
 #include "shoot.hpp"
 
-void player::draw() {
+void Player::draw() {
     move(y,x);
-    addch(pl);
-
+    addch(ch);
+    refresh();
 }
 
-void player::clean() {
+void Player::clean() {
     move(y,x);
     addch(' ');
-
+    refresh();
 }
 
-void player::moveit() {
-    switch (d) {
-        case UP:
-            pl='A';
+void Player::moveit() {
+    int key=getch();
+
+   switch (key) {
+       case 'w':
+           d=up;
+            ch='A';
             clean();
-            if (!(y<2)) {
-                y--;
+            if (y>1) {
+                --y;
             }
-            break;
-        case DOWN:
-            pl='V';
+            draw();
+           break;
+       case 's':
+           d=down;
+            ch='V';
             clean();
-            if (!(y>getmaxy(stdscr)-3)) {y++;}
-            break;
-        case LEFT:
-            pl='<';
+            if (y<WIDTH-1) {
+                ++y;
+            }
+            draw();
+           break;
+       case 'a':
+           d=left;
+            ch='<';
             clean();
-            if (!(x<2)) {x--;}
-
-            break;
-        case RIGHT:
-            pl='>';
+            if (x>1) {
+                --x;
+            }
+            draw();
+           break;
+       case 'd':
+           d=right;
+            ch='>';
             clean();
-            if (!(x>getmaxx(stdscr)-3)) {x++;}
+            if (x<HEIGHT-1) {
+            ++x;
+            }
+            draw();
             break;
-        default:break;
-    }
-    draw();
-}
- void player::moveplayer() {
+       case ' ':
+           shoot();
+           draw();
+           break;
+       case '\t':
 
-    usleep(100000);
-    switch (getch()) {
-        case KEY_UP:
-            d=UP;
-            moveit();
-            break;
-        case KEY_DOWN:
-            d=DOWN;
-            moveit();
-            break;
-        case KEY_LEFT:
-            d=LEFT;
-            moveit();
-            break;
-
-        case KEY_RIGHT:
-            d=RIGHT;
-            moveit();
-            break;
-        case ' ':
-            shoot();
-            break;
-        default:break;
-
-    }
-
-
+           nodelay(stdscr, false);
+           getch();
+           nodelay(stdscr, true);
+           clear();
+           wall();
+           break;
+   }
 }
 
-void player::shoot() {
-
+void Player::shoot() {
     switch (d) {
-        case UP:
-        case DOWN:
-            v.push_back(bullet(x,y,'|',d));
+        case up:
+        case down:
+            bullets.push_back(Bullet(d,'|',x,y));
             break;
-        case LEFT:
-        case RIGHT:
-            v.push_back(bullet(x,y,'-',d));
+        case left:
+        case right:
+            bullets.push_back(Bullet(d,'-',x,y));
             break;
     }
-    draw();
 }
 
-void player::autoshoot() {
-    for (int i=0; i<v.size(); i++) {
-        v[i].shoot();
-        if (v[i].x<1 || v[i].x>getmaxx(stdscr)-2) {
-            v[i].clean();
-            v.erase(v.begin()+i);
+void Player::autoshoot() {
+    for (int i=0;i<bullets.size();i++) {
+        bullets[i].moveit();
+       if (bullets[i].x<1 || bullets[i].x>HEIGHT) {
+            bullets[i].clean();
+            bullets.erase(bullets.begin()+i);
             wall();
+            break;
         }
-        if (v[i].y<1 || v[i].y>getmaxy(stdscr)-2) {
-            v[i].clean();
-            v.erase(v.begin()+i);
+        if (bullets[i].y<1 || bullets[i].y>WIDTH) {
+            bullets[i].clean();
+            bullets.erase(bullets.begin()+i);
             wall();
+            break;
         }
-        draw();
     }
 }
