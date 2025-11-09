@@ -1,59 +1,60 @@
-/
+//
 // Created by wy on 2025/8/8.
 //
 
 #include "shoot.hpp"
 
-void bullet::draw() {
+void Bullet::draw() {
     move(y,x);
-    addch(bl);
+    addch(ch);
 }
 
-void bullet::clean() {
+void Bullet::clean() {
     move(y,x);
     addch(' ');
 }
-void bullet::shoot() {
-    switch (d) {
-        case UP:
-            clean();
-            y--;
-            break;
-        case DOWN:
-            clean();
-            y++;
-            break;
-        case LEFT:
-            clean();
-            x--;
 
-            break;
-        case RIGHT:
+void Bullet::moveit() {
+    switch (d) {
+        case up:
             clean();
-            x++;
+            --y;
+            draw();
             break;
-        default:break;
+        case down:
+            clean();
+            ++y;
+            draw();
+            break;
+        case left:
+            clean();
+            --x;
+            draw();
+            break;
+        case right:
+            clean();
+            ++x;
+            draw();
+            break;
     }
-    draw();
 }
 
 void wall() {
+    for (int i=0;i<WIDTH;i++) {
+        mvprintw(i,0,"#");
+        refresh();
 
-    for (int i=0;i<getmaxx(stdscr);i++) {
-        move(0,i);
-        printw("#");
-
-        move(getmaxy(stdscr)-1,i);
-        printw("#");
-
+        mvprintw(i,HEIGHT,"#");
+        refresh();
     }
 
-    for (int i=0;i<getmaxy(stdscr);i++) {
-        move(i,0);
-        printw("#");
+    for (int i=0;i<HEIGHT;i++) {
+        mvprintw(0,i,"#");
+        refresh();
 
-        move(i,getmaxx(stdscr)-1);
-        printw("#");
+        mvprintw(WIDTH,i,"#");
+        refresh();
     }
-
+    printw("#");
+    refresh();
 }
